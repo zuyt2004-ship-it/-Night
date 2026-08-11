@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Good Night 🌙</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:#050817;color:#fff}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.scene{position:relative;z-index:2;width:100%;height:100%;display:grid;place-items:center;padding:20px}
+.card{width:min(760px,92vw);padding:50px 28px;border:1px solid rgba(255,255,255,.14);border-radius:36px;background:rgba(255,255,255,.07);backdrop-filter:blur(12px);text-align:center;box-shadow:0 20px 90px rgba(70,80,180,.2)}
+.moon{font-size:clamp(70px,15vw,130px);filter:drop-shadow(0 0 30px #fff5a8);animation:float 4s ease-in-out infinite}
+h1{font-size:clamp(42px,9vw,82px);margin:12px 0;background:linear-gradient(90deg,#fff,#fff2a8,#c9d8ff,#fff);background-size:300%;-webkit-background-clip:text;color:transparent;animation:shine 5s linear infinite}
+p{font-size:clamp(18px,3.5vw,27px);line-height:1.7;color:#e9ecff}
+button{border:0;border-radius:999px;padding:15px 30px;font-size:18px;font-weight:800;color:#17203e;background:linear-gradient(135deg,#fff3ad,#fff);box-shadow:0 0 35px rgba(255,240,160,.25);cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-3px) scale(1.04)}
+.hidden{display:none}
+#final{margin-top:24px;animation:appear .8s ease}
+.raccoon{font-size:58px;display:inline-block;animation:sleep 3s ease-in-out infinite}
+.heart{position:fixed;z-index:10;pointer-events:none;font-size:25px;animation:up 2.2s ease-out forwards}
+@keyframes up{to{transform:translate(var(--x),-80vh) rotate(var(--r));opacity:0}}
+@keyframes float{50%{transform:translateY(-12px)}}
+@keyframes sleep{50%{transform:translateY(5px) rotate(2deg)}}
+@keyframes shine{to{background-position:300%}}
+@keyframes appear{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="scene">
+  <div class="card">
+    <div class="moon">🌙</div>
+    <div class="raccoon">🦝💤</div>
+    <h1>Good Night</h1>
+    <p>คืนนี้ก็อย่าลืมพักผ่อนนะ<br>พรุ่งนี้ค่อยไปสู้กันใหม่ 🌷</p>
+    <button onclick="goodnight()">🌙 กดก่อนนอน</button>
+    <div id="final" class="hidden">
+      <p><b>Good Night 🌙</b><br>
+      ขอให้คืนนี้เป็นคืนที่ดีนะ<br>
+      แล้วก็... อย่าลืมฝันดีล่ะ 🦝💗</p>
+    </div>
+  </div>
+</div>
+<script>
+const c=document.getElementById('sky'),ctx=c.getContext('2d');
+let W,H,stars=[];
+function resize(){
+  W=c.width=innerWidth;H=c.height=innerHeight;
+  stars=Array.from({length:170},()=>({x:Math.random()*W,y:Math.random()*H,r:.4+Math.random()*1.7,p:Math.random()*8}));
+}
+addEventListener('resize',resize);resize();
+function draw(t){
+  let g=ctx.createRadialGradient(W*.5,H*.35,20,W*.5,H*.5,Math.max(W,H)*.8);
+  g.addColorStop(0,'#18235a');g.addColorStop(.55,'#0b1030');g.addColorStop(1,'#030510');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  stars.forEach(s=>{
+    ctx.globalAlpha=.25+.4*Math.sin(t/800+s.p);
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,7);ctx.fill();
+  });
+  ctx.globalAlpha=1;requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+function goodnight(){
+  document.getElementById('final').classList.remove('hidden');
+  burst(55);
+}
+function burst(n){
+  const symbols=['💗','✨','⭐','🌙','🌷','💫'];
+  for(let i=0;i<n;i++)setTimeout(()=>{
+    const e=document.createElement('div');
+    e.className='heart';
+    e.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    e.style.left='50vw';e.style.bottom='25vh';
+    e.style.setProperty('--x',(Math.random()-.5)*90+'vw');
+    e.style.setProperty('--r',(Math.random()-.5)*800+'deg');
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),2300);
+  },i*25);
+}
+</script>
+</body>
+</html>
